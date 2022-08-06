@@ -1,0 +1,11 @@
+body {
+  min-width: 350px;
+}
+
+#priceTable td {
+  padding-right: 5px;
+}
+
+.tren-cell {
+  text-align: right;
+}

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Coin price Helper",
+  "version": "1.0.0",
+  "description": "Show coins price and trends",
+  "applications": {
+    "gecko": {
+      "strict_min_version": "48.0"
+    }
+  },
+  "browser_action": {
+    "default_popup": "popup.html"
+  }
+}
