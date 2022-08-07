@@ -1,0 +1,61 @@
+name: Build and sign firefox extension
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.16.0'
+      - name: Install web-ext
+        run: npm install --global web-ext 
+      - name: Build extension
+        run: |
+          web-ext build --artifacts-dir ./artifacts --overwrite-dest          
+          echo "::set-output name=artpath::$(ls artifacts/ |  grep -o  '.*\.zip$')"
+        id: bart
+      - name: Sign extension
+        run: |
+          web-ext sign --artifacts-dir ./artifacts --api-key='${{ secrets.JWT_API_KEY }}' --api-secret='${{ secrets.JWT_API_SECRET }}'
+          echo "::set-output name=artpath::$(ls artifacts/ |  grep -o  '.*\.xpi$')"
+        id: cart
+      - name: Read outputs
+        run: echo ${{ steps.bart.outputs.artpath }}, ${{ steps.cart.outputs.artpath }}
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload built artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/${{ steps.bart.outputs.artpath }}
+          asset_name: ${{ steps.bart.outputs.artpath }}
+          asset_content_type: application/zip
+      - name: Upload signed artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/${{ steps.cart.outputs.artpath }}
+          asset_name: ${{ steps.cart.outputs.artpath }}
+          asset_content_type: application/zip
