@@ -14,6 +14,9 @@ const coins = [
   new Coin('weth', 'WETH', 'WETH'),
   new Coin('juno-network', 'JUNO', 'JUNO'),
   new Coin('crypto-com-chain', 'Cronos', 'CRO'),
+  new Coin('polkadot', 'Polkadot', 'DOT'),
+  new Coin('evmos', 'Evmos', 'EVMOS'),
+  new Coin('sifchain', 'Sifchain', 'EROWAN'),
 ]
 
 const triangleDown = '\u25BC';
