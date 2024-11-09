@@ -1,1 +1,1 @@
-# sogos-coin-price-helper
+# ssg-coin-price-helper
